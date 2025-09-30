@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contractors & Suppliers</title>
+<style>
+  :root {
+    --bg: #0b0c10; --card:#111318; --text:#eaeef3; --muted:#95a1ae; --accent:#5eead4;
+    --chip:#1b1f2a; --chip-text:#d1e7ff; --border:#232733;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Noto Sans, "Apple Color Emoji","Segoe UI Emoji";
+  }
+  header {
+    position:sticky; top:0; z-index:10; background:linear-gradient(180deg, #0b0c10 60%, #0b0c1000);
+    padding:12px 12px 8px; border-bottom:1px solid var(--border);
+  }
+  .row { display:flex; gap:8px; flex-wrap:wrap; }
+  input, select {
+    background:#0f1117; color:var(--text); border:1px solid var(--border); border-radius:12px; padding:12px 14px; flex:1;
+    outline:none;
+  }
+  .wrap { max-width:980px; margin:0 auto; padding:10px; }
+  .controls { gap:8px; }
+  .cards { display:grid; grid-template-columns: 1fr; gap:12px; padding-bottom:80px; }
+  @media (min-width:520px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width:840px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+  .card {
+    background:linear-gradient(180deg,#12141a,#0f1117); border:1px solid var(--border); border-radius:16px; padding:14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
+  .title { font-weight:700; font-size:1.02rem; line-height:1.2; margin:2px 0 6px; }
+  .sub { color:var(--muted); font-size:0.9rem; }
+  .badges { margin-top:8px; display:flex; gap:6px; flex-wrap:wrap; }
+  .chip {
+    background:var(--chip); color:var(--chip-text); border:1px solid var(--border);
+    font-size:0.76rem; padding:6px 8px; border-radius:999px;
+  }
+  .actions { display:flex; gap:8px; margin-top:10px; }
+  .btn {
+    flex:1; text-align:center; text-decoration:none; color:#0b0c10; background:var(--accent);
+    padding:10px 12px; border-radius:12px; font-weight:700; border:0;
+  }
+  .btn.alt { background:#2dd4bf33; color:#9ae6e1; border:1px solid #2dd4bf66; }
+  .tiny { font-size:0.78rem; color:#b7c0cc; margin-top:8px; }
+  footer { position:fixed; bottom:0; left:0; right:0; background:rgba(15,17,23,0.85); border-top:1px solid var(--border); }
+  .footwrap { max-width:980px; margin:0 auto; padding:8px 10px; display:flex; gap:8px; }
+  .footwrap button {
+    flex:1; padding:12px; background:#171923; color:#cbd5e1; border:1px solid var(--border); border-radius:12px; font-weight:600;
+  }
+  .count { font-size:0.86rem; color:#9fb2c8; margin-left:4px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="row controls">
+      <input id="q" type="search" placeholder="Search name, trade, city, notes…" />
+      <select id="trade">
+        <option value="">All trades</option>
+      </select>
+      <select id="state">
+        <option value="">All states</option>
+      </select>
+    </div>
+    <div class="row" style="margin-top:8px;">
+      <select id="sort">
+        <option value="name">Sort: Name</option>
+        <option value="trade">Sort: Trade</option>
+        <option value="city">Sort: City</option>
+      </select>
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <div id="cards" class="cards"></div>
+</div>
+<footer>
+  <div class="footwrap">
+    <button id="shareBtn">Share list</button>
+    <button id="installBtn">Add to Home Screen</button>
+  </div>
+</footer>
+<script>
+const DATA = [{"name": "Vendor", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Anthony J. Contenta", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Bruno Hayn", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Coleton Lamb", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Ralph Habchi", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Alan Peed Trim guy", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Babbitt Home Improvement", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Steve Myer", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Fine and Handy LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Rooster Construction", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Doug O'Connor The Wood Shop", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Fine and Handy LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "JFM, LLC Contracting", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Concrete Connection", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Concrete Express", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Concrete Quick", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Classey Concrete", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Jenco Construction", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "KobyLuck", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "McKinney Mobile Mix", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "RI Concrete  services", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Mobile Mix Concrete", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Thomas Construction LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Master Halco", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Master Halco", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Master Halco", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Diego Bermira", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Roberts Cleaning Service", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Cardinal Container Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "CWPM, LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "CWPM, LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Hayes Services", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Dylan's Dumpster LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Serluca Dumpster", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "USA Hauling & Recycling Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Accurate Electric", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Bassetti Electric LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Casey Electrical Services", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "CLS - CT Lighting Showroom", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "CT Lighting Centers", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "D.B. Lunt Electrical Contractor", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Electric Wholesalers", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Lagace Electric", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "MGT Electrical Services Mike Terlizzi", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Ritacco Electric", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "TR & Sons Electric LLC dba Chabot Electric", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Eastern Fence", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "HRC Services LLC -  Bob Courtemanche", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Calafiore Tile", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "T&S Flooring", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Universal Ceramic Tile", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Pro Source Supply", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Curved Glass Distributors", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Ruby Glass Co.", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "United Glass & Mirror Co.", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Avant Building & Remodeling Roofing/Siding/Gutters", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "C&R Insulation", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Landi Home Improvement", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Quality Insulation, Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Joe Cerrito", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "SunnStone Construction (Goliath Tech)", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Goliath Tech", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Techno Metal Post", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Joe Agnello (Agnello Investigations)", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Quality Insulation", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Anchor Insulation", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "TeirTech Services", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Cedar Ridge Landscaping", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Cedar Ridge Landscaping", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "VP Lawn & landscaping", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Dwyer Landscaping", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Be The Light Designs, LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "A Scalla Lock & Key", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Arnold Lumber", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Beard Lumber", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Chace Suilding Supply of CT, Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Chace Suilding Supply of CT, Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Kelly Fradet Lumber", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Master Halco", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Norwich Lumber", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Ring's End", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Riverhead Building Supply", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Riverhead Building Supply", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Sanford & Hawley, Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Shagbark Lumber & Farm Supplies", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Sigfridson Wood Products", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Willards Lumber", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "General Woodcraft", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Father & Son/Drini Pasholli", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Larry Fusaro", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Varsen Landscapes LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Champman Landscaping, LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Stone Craft Masonry", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "True North Stoneworks", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Thomas Construction LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Nutmeg Tool & Products", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Ulasik Sheet Metal Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Certa Pro Painters", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Emilien Painting & Restoration", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Ring's End Paint Store", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Sherwin-Williams", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "TJ Painting", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Login Info for PermitLink Online and Viewpoint Cloud", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Town of Montville", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Voice New England", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Delia Plumbing", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Ed Tomaszek", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Friedrich Air Conditioning Co", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Glasco Heating & Air Cond. Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Granite Group", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Granite Group", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "J & J Plumbing & Heating, LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Riley's Heating Service, Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "A&D Portable Rentals", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Global Site Services", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Regional Restrooms", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Richard White & Sons", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Action Equipment Rental", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Arrow Equipment Rental", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Superior East", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Taylor Rental (Johnsons Hardware)", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Pawcatucket Roofing", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Perez Brothers Roofing", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Sclalabba Roofing & Remodeling", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Gulf Eagle", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "CR Laurence", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Stoett", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Branciforte Drywall", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Cyr Drywall", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Halle Drywall", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Coastal Drywall", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Landi Home Improvement", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "ABC Supply Company Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Avant Siding & Remodeling (Siding & Roofers)", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Ace True Value", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Gulf Eagle", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Lansing - Harvey Industries", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Whitney Supply Company", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Four Seasons Sunrooms", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Lux Homes/Four Seasons Sunroom installer", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Sunshine Rooms - Crystal Structures", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "SummerSpace", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "TEMO", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Thermal Designs", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Curry Land Surveying LLC", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Estes Express Lines", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "JP Express", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Ron McCoy Trucking", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Anderson Windows Inc", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Wincore Windows", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Cable Bullet", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "Call Before You Dig", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}, {"name": "CenterLine", "trade": "", "phone": "", "email": "", "city": "", "state": "", "contact": "", "notes": "", "website": ""}];
+
+const cardsEl = document.getElementById('cards');
+const qEl = document.getElementById('q');
+const tradeEl = document.getElementById('trade');
+const stateEl = document.getElementById('state');
+const sortEl = document.getElementById('sort');
+const countEl = document.getElementById('count');
+const shareBtn = document.getElementById('shareBtn');
+const installBtn = document.getElementById('installBtn');
+
+// Populate filters
+const trades = [...new Set(DATA.map(r => (r.trade || '').trim()).filter(Boolean))].sort();
+const states = [...new Set(DATA.map(r => (r.state || '').trim()).filter(Boolean))].sort();
+for (const t of trades) { const o = document.createElement('option'); o.value=t; o.textContent=t; tradeEl.appendChild(o); }
+for (const s of states) { const o = document.createElement('option'); o.value=s; o.textContent=s; stateEl.appendChild(o); }
+
+function phoneLink(p) {
+  if (!p) return "";
+  // Strip non-digits, preserve leading +
+  const clean = p.replace(/[^0-9+]/g,'');
+  return `tel:${clean}`;
+}
+function mailLink(m) {
+  return m ? `mailto:${m}` : "";
+}
+
+function render(list) {
+  cardsEl.innerHTML = "";
+  for (const r of list) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const loc = [r.city, r.state].filter(Boolean).join(', ');
+    const trade = r.trade || '—';
+    const title = r.name || r.contact || 'Unnamed';
+    card.innerHTML = `
+      <div class="title">${title}</div>
+      <div class="sub">${trade}${loc ? ' • ' + loc : ''}</div>
+      <div class="badges">
+        ${r.contact ? `<span class="chip">Contact: ${r.contact}</span>` : ''}
+        ${r.phone ? `<span class="chip">📞 ${r.phone}</span>` : ''}
+        ${r.email ? `<span class="chip">✉️ ${r.email}</span>` : ''}
+      </div>
+      ${r.notes ? `<div class="tiny">${r.notes}</div>` : ''}
+      <div class="actions">
+        ${r.phone ? `<a class="btn" href="${phoneLink(r.phone)}">Call</a>` : ''}
+        ${r.email ? `<a class="btn alt" href="${mailLink(r.email)}">Email</a>` : ''}
+        ${r.website ? `<a class="btn alt" target="_blank" rel="noopener" href="${r.website.startsWith('http') ? r.website : 'http://' + r.website}">Site</a>` : ''}
+      </div>
+    `;
+    cardsEl.appendChild(card);
+  }
+  countEl.textContent = `${list.length} shown / ${DATA.length} total`;
+}
+
+function norm(s) { return (s || '').toLowerCase(); }
+
+function apply() {
+  const q = norm(qEl.value);
+  const t = tradeEl.value;
+  const s = stateEl.value;
+  const key = sortEl.value;
+  let list = DATA.filter(r => {
+    if (t && (r.trade||'') !== t) return false;
+    if (s && (r.state||'') !== s) return false;
+    if (!q) return true;
+    const blob = [r.name,r.trade,r.city,r.state,r.contact,r.notes].map(norm).join(' ');
+    return blob.includes(q);
+  });
+  list.sort((a,b) => norm(a[key]).localeCompare(norm(b[key])));
+  render(list);
+}
+
+qEl.addEventListener('input', apply);
+tradeEl.addEventListener('change', apply);
+stateEl.addEventListener('change', apply);
+sortEl.addEventListener('change', apply);
+
+// Web Share API
+shareBtn.addEventListener('click', async () => {
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: 'Contractors & Suppliers',
+        text: 'Open our mobile list:',
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      shareBtn.textContent = 'Link copied';
+      setTimeout(()=>shareBtn.textContent='Share list',1200);
+    }
+  } catch(e) { console.log(e); }
+});
+
+// Minimal PWA-ish prompt (no service worker needed for now)
+installBtn.addEventListener('click', () => {
+  alert('Tip: Use your browser’s “Add to Home Screen” to pin this as an app.');
+});
+
+// Initial render
+apply();
+</script>
+</body>
+</html>
